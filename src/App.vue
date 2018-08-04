@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <button id="toggle" @click="toggleCropper">Toggle Cropper</button>
-    <div class="fa">
+    <div class="fa" ref="fa">
       <div class="bor">
         <img
           id="image"
@@ -12,7 +12,7 @@
           style="width : 1142px; height : 356px;"
         >
       </div>
-        <canvas id="canvas" width="1142" height="356" style="border:1px solid black">Canvas画板</canvas>
+        <!-- <canvas id="canvas" width="1142" height="356" style="border:1px solid black">Canvas画板</canvas> -->
     </div>
     <button type="" v-on:click="clear">清除</button>
     <button v-on:click="save">保存</button>
@@ -30,87 +30,7 @@ import 'cropper'
 
 var draw;
 var preHandler = function(e){e.preventDefault();}
-class Draw {
-  constructor(el) {
-    this.el = el
-    this.canvas = document.getElementById(this.el)
-    this.cxt = this.canvas.getContext('2d')
-    this.stage_info = canvas.getBoundingClientRect()
-    this.path = {
-      beginX: 0,
-      beginY: 0,
-      endX: 0,
-      endY: 0
-    }
-  }
-  init(btn) {
-    var that = this; 
-     
-    this.canvas.onmousedown = function(event) {
-      document.addEventListener('mousedown', preHandler, false); 
-      that.drawBegin(event)
-    }
-    this.canvas.onmouseup = function(event) { 
-      document.addEventListener('mouseup', preHandler, false); 
-      that.drawEnd()
-       
-    }
-    // this.clear(btn)
-  }
-  clean(){
-    document.removeEventListener('mousedown', preHandler, false); 
-    document.removeEventListener('mouseup', preHandler, false);
-    document.removeEventListener('mousemove', preHandler, false);
-    this.canvas.onmousemove = this.canvas.onmouseup = this.canvas.onmousedown = null
-  }
-  drawBegin(e) {
-    var that = this;
-    window.getSelection() ? window.getSelection().removeAllRanges() : document.selection.empty()
-    this.cxt.strokeStyle = "#000"
-    this.cxt.beginPath()
-    console.log(e,this.stage_info)
-    this.cxt.moveTo(
-      e.clientX - this.stage_info.left,
-      e.clientY - this.stage_info.top
-    )
-    this.path.beginX = e.clientX - this.stage_info.left
-    this.path.beginY = e.clientY - this.stage_info.top
-    this.canvas.onmousemove = function(){
-      that.drawing(event)
-    }
-  }
-  drawing(e) {
-    this.cxt.lineTo(
-      e.clientX - this.stage_info.left,
-      e.clientY - this.stage_info.top
-    )
-    this.path.endX = e.clientX - this.stage_info.left
-    this.path.endY = e.clientY - this.stage_info.top
-    this.cxt.stroke()
-  }
-  drawEnd() {
-    var that = this;
-    document.removeEventListener('mousedown', preHandler, false); 
-    document.removeEventListener('mouseup', preHandler, false);
-    document.removeEventListener('mousemove', preHandler, false);
-    this.canvas.onmousemove = null;
-    this.canvas.onmouseup = null;
-    this.canvas.onmousedown = null;
-    var timer = setTimeout(function(){
-      that.canvas.onmousedown = function(event) {
-        document.addEventListener('mousedown', preHandler, false); 
-        that.drawBegin(event);
-        clearTimeout(timer);
-      }
-    },200);
-  }
-  clear(btn) {
-    this.cxt.clearRect(0, 0, 1142, 356)
-  }
-  save(){
-    return canvas.toDataURL("image/png")
-  }
-}
+
 
 export default {
   directives: {
@@ -169,8 +89,93 @@ export default {
       width : 1142,
       height : 356
     })
-    this.draw=new Draw('canvas');
+    var canvasData = document.createElement('canvas');
+    canvasData.width = '1142';
+    canvasData.height = '356';
+    console.log(this.$refs.fa.childNodes[0].childNodes[1])
+    // $('.cropper-canvas').append($('#canvas'))
+
+    // class Draw {
+    //   constructor(el) {
+    //     this.el = el
+    //     // this.canvas = document.getElementById(this.el)
+    //     this.canvas = document.getElementById('canvas')
+    //     this.cxt = this.canvas.getContext('2d')
+    //     this.stage_info = canvas.getBoundingClientRect()
+    //     this.path = {
+    //       beginX: 0,
+    //       beginY: 0,
+    //       endX: 0,
+    //       endY: 0
+    //     }
+    //   }
+    //   init(btn) {
+    //     var that = this; 
+        
+    //     this.canvas.onmousedown = function(event) {
+    //       document.addEventListener('mousedown', preHandler, false); 
+    //       that.drawBegin(event)
+    //     }
+    //     this.canvas.onmouseup = function(event) { 
+    //       document.addEventListener('mouseup', preHandler, false); 
+    //       that.drawEnd()
+          
+    //     }
+    //     // this.clear(btn)
+    //   }
+    //   clean(){
+    //     document.removeEventListener('mousedown', preHandler, false); 
+    //     document.removeEventListener('mouseup', preHandler, false);
+    //     document.removeEventListener('mousemove', preHandler, false);
+    //     this.canvas.onmousemove = null;
+    //     this.canvas.onmouseup = null;
+    //     this.canvas.onmousedown = null;
+    //   }
+    //   drawBegin(e) {
+    //     var that = this;
+    //     window.getSelection() ? window.getSelection().removeAllRanges() : document.selection.empty()
+    //     this.cxt.strokeStyle = "#000"
+    //     this.cxt.beginPath()
+    //     console.log(e,this.stage_info)
+    //     this.cxt.moveTo(
+    //       e.clientX - this.stage_info.left,
+    //       e.clientY - this.stage_info.top
+    //     )
+    //     this.path.beginX = e.clientX - this.stage_info.left
+    //     this.path.beginY = e.clientY - this.stage_info.top
+    //     this.canvas.onmousemove = function(){
+    //       that.drawing(event)
+    //     }
+    //   }
+    //   drawing(e) {
+    //     this.cxt.lineTo(
+    //       e.clientX - this.stage_info.left,
+    //       e.clientY - this.stage_info.top
+    //     )
+    //     this.path.endX = e.clientX - this.stage_info.left
+    //     this.path.endY = e.clientY - this.stage_info.top
+    //     this.cxt.stroke()
+    //   }
+    //   drawEnd() {
+    //     var that = this;
+    //     this.clean();
+    //     var timer = setTimeout(function(){
+    //       that.canvas.onmousedown = function(event) {
+    //         document.addEventListener('mousedown', preHandler, false); 
+    //         that.drawBegin(event);
+    //         clearTimeout(timer);
+    //       }
+    //     },200);
+    //   }
+    //   clear(btn) {
+    //     this.cxt.clearRect(0, 0, 1142, 356)
+    //   }
+    //   save(){
+    //     return canvas.toDataURL("image/png")
+    //   }
+    // }
     
+    // this.draw=new Draw('canvas');
   },
   methods: {
     changePen(){
@@ -238,10 +243,10 @@ export default {
   height : 100%;
 }
 #canvas{
-  position: absolute;
+  /* position: absolute;
   top : 0;
   left : 0;
-  z-index : 1;
+  z-index : 1; */
 }
 .bor{
   width : 1142px;
