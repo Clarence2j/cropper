@@ -36,6 +36,7 @@ export default {
           zoomOnWheel : false,
           minContainerWidth : 1142,
           minContainerHeight : 356,
+          toggleDragModeOnDblclick : false,
           ready:function () {
             jQuery(el).cropper('clear')
           },
@@ -82,6 +83,10 @@ export default {
       this.bigState = this.bigState + 1 == 4 ? 1 : this.bigState + 1;
       if(this.bigState == 1){
         jQuery(image).cropper('zoom',-3);
+        jQuery(image).cropper('setCanvasData',{
+          left : 0,
+          top : 0
+        })
       }else{
         jQuery(image).cropper('zoom',1);
       }
