@@ -5,36 +5,71 @@
             v-show="showAlert"
         >
             <div class="hidden-box" ref="hidden-box">
-                <div 
-                    class="move-box"
-                    id="moveBox"
-                    :style="{width:w+'px',height:h+'px'}"
-                    @mousedown.prevent="boxStartFn"
-                    @mousemove.prevent="boxMoveFn"
-                    @mouseup.prevent="boxEndFn"
-                >
-                    <img 
-                        :src="imgUrl" 
-                        alt="" 
-                        :style="{width:w+'px',height:h+'px',top:bt,left:bl,transform:`scale(${bigState})`}" 
-                        class="image"
-                    >
-                    <canvas 
-                        id="canvas" 
-                        class="canvas"
-                        width="1142"
-                        height="356"
-                        ref="paint"
-                        :style="{transform:`scale(${bigState})`}"
-                        @mousedown.prevent="penStartFn"
-                        @mousemove.prevent="penMoveFn"
-                        @mouseup.prevent="penEndFn"
-                    ></canvas>
-                </div>
+                <transition name="slide-left">
+                    <keep-alive>
+                        <div 
+                            class="move-box"
+                            :id="isShow ? 'moveBox' : ''"
+                            :style="{width:w+'px',height:h+'px'}"
+                            @mousedown.prevent="boxStartFn"
+                            @mousemove.prevent="boxMoveFn"
+                            @mouseup.prevent="boxEndFn"
+                            v-show="isShow"
+                        >
+                            <img 
+                                :src="imgUrl" 
+                                alt="" 
+                                :style="{width:w+'px',height:h+'px',top:bt,left:bl,transform:`scale(${bigState})`}" 
+                                class="image"
+                            >
+                            <canvas 
+                                :id="isShow ? 'canvas' : ''" 
+                                class="canvas"
+                                width="1142"
+                                height="356"
+                                :style="{transform:`scale(${bigState})`}"
+                                @mousedown.prevent="penStartFn"
+                                @mousemove.prevent="penMoveFn"
+                                @mouseup.prevent="penEndFn"
+                            ></canvas>
+                        </div>
+                    </keep-alive>
+                </transition>
+                <transition name="slide-right">
+                    <keep-alive>
+                        <div 
+                            class="move-box"
+                            :id="!isShow ? 'moveBox' : ''"
+                            :style="{width:w+'px',height:h+'px'}"
+                            @mousedown.prevent="boxStartFn"
+                            @mousemove.prevent="boxMoveFn"
+                            @mouseup.prevent="boxEndFn"
+                            v-show="!isShow"
+                        >
+                            <img 
+                                :src="imgUrl2" 
+                                alt="" 
+                                :style="{width:w+'px',height:h+'px',top:bt,left:bl,transform:`scale(${bigState})`}" 
+                                class="image"
+                            >
+                            <canvas 
+                                :id="!isShow ? 'canvas' : ''" 
+                                class="canvas"
+                                width="1142"
+                                height="356"
+                                :style="{transform:`scale(${bigState})`}"
+                                @mousedown.prevent="penStartFn"
+                                @mousemove.prevent="penMoveFn"
+                                @mouseup.prevent="penEndFn"
+                            ></canvas>
+                        </div>
+                    </keep-alive>
+                </transition>
                 <div class="btn-group">
                     <input type="button" :value="'放大' + bigState" @click="bigFn">
                     <input type="button" :value="banPenUse ? penArr[0] : penArr[1]" @click="banBoxMoveFn">
                     <input type="button" value="清除画布" @click="clear">
+                    <input type="button" value="切换" @click="chagneFn">
                 </div>
             </div>
             <div class="hidden-bg"  @click.stop="closeFn"></div>
@@ -47,8 +82,10 @@ export default{
     name : 'move',
     data(){
         return {
+            isShow : true,//切换
             showAlert : 0,
             imgUrl : 'http://img.zcool.cn/community/0114375543f8ec0000019ae948310f.jpg',
+            imgUrl2 : 'http://img.zcool.cn/community/014a52554064690000005b03d35d4e.jpg@2o.jpg',
             w : 1142,
             h : 356,
             /*缩放参数*/
@@ -83,9 +120,13 @@ export default{
         this.bh = 356;
     },
     mounted(){
-        this.cxt = canvas.getContext('2d')
+        this.cxt = canvas.getContext('2d');
     },
     methods : {
+        chagneFn(){
+            this.isShow = !this.isShow;
+            this.cxt = canvas.getContext('2d')
+        },
         /*     画笔    */
         banBoxMoveFn(){
             this.banBoxMove = !this.banBoxMove;
@@ -132,10 +173,10 @@ export default{
             // if(top >= this.$refs['hidden-box'].offsetHeight){
             //     top = this.$refs['hidden-box'].offsetHeight;
             // }
-            if(left <= 0){
-                left = 0;
-                this.boxBaseState = false;
-            }
+            // if(left <= 0){
+            //     left = 0;
+            //     this.boxBaseState = false;
+            // }
             // if(left >= this.$refs['hidden-box'].offsetWidth){
             //     left = this.$refs['hidden-box'].offsetWidth;
             // }
@@ -200,8 +241,46 @@ export default{
     transform: translate(-50% , -50%);
     background : #fff;
     z-index: 1;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
+
+.slide-right-enter-active{
+    will-change: transform;
+    transition: all 1s;
+    position: absolute;
+    left:100%;
+}
+.slide-left-enter-active{
+    will-change: transform;
+    transition: all 1s;
+    position: absolute;
+    left:100%;
+}
+.slide-right-leave-active{
+    will-change : transform;
+    transition: all 1s;
+    position: absolute;
+    left : 0;
+}
+.slide-left-leave-active{
+    will-change : transform;
+    transition: all 1s;
+    position: absolute;
+    left:-100%;
+}
+.slide-right-enter {
+    transform: translateX(100%);
+}
+.slide-right-leave-active {
+    transform: translateX(100%);
+}
+.slide-left-enter {
+    transform: translateX(-100%);
+}
+.slide-left-leave-active {
+    transform: translateX(-100%);
+}
+
 .hidden-bg{
     width: 100%;
     height : 100%;

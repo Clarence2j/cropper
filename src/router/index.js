@@ -11,6 +11,16 @@ export default new Router({
       path: '/',
       name: 'HelloWorld',
       component: HelloWorld
+    },
+    {
+      path : '/test',
+      name : 'test',
+      component : resolve => require(['@/components/hoverTest'] , resolve)
+    },
+    {
+      path : '/transition',
+      name : 'transition',
+      component : resolve => require(['@/components/transition'] , resolve)
     }
   ]
 })
