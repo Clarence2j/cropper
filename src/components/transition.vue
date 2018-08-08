@@ -1,6 +1,6 @@
 <template>
     <div class="trans-box">
-        <div class="fa-box">
+        <div class="fa-box" v-ccc="obj">
             <transition name="slide-left">
                 <div class="box" v-show="isShow">1</div>
             </transition>
@@ -14,9 +14,22 @@
 <script>
 export default{
     name : 'TransitionBox',
+    directives : {
+        ccc : {
+            bind(el,binding){
+                console.log(el)
+                console.log(this)
+                console.log(binding.value)
+            }
+        }
+    },
     data(){
         return {
-            isShow : true
+            isShow : true,
+            obj : {
+                a : 1,
+                b : 2
+            }
         }
     },
     methods : {
@@ -70,7 +83,7 @@ export default{
 .fa-box{
     width : 302px;
     height: 102px;
-    /* overflow: hidden; */
+    overflow: hidden; 
     margin : 30px auto;
     position: relative;
     border : 1px solid #ccc;

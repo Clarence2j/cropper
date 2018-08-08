@@ -21,6 +21,16 @@ export default new Router({
       path : '/transition',
       name : 'transition',
       component : resolve => require(['@/components/transition'] , resolve)
+    },
+    {
+      path : '/element',
+      name : 'element',
+      component : resolve => require(['@/components/element'] , resolve)
+    },
+    {
+      path : '/testId',
+      name : 'testId',
+      component : resolve => require(['@/components/test-id'] , resolve)
     }
   ]
 })
